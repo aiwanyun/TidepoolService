@@ -58,12 +58,12 @@ public struct SettingsView: View {
                             .padding(.bottom)
                         if selectedEnvironment != TEnvironment.productionEnvironment {
                             VStack {
-                                Text(LocalizedString("Environment", comment: "Label title for displaying selected Tidepool server environment."))
+                                Text(LocalizedString("环境", comment: "Label title for displaying selected Tidepool server environment."))
                                     .bold()
                                 Text(selectedEnvironment.description)
 
                                 if isLoggedIn {
-                                    Button(LocalizedString("Revoke token", comment: "Button title to revoke oauth tokens"), action: {
+                                    Button(LocalizedString("撤销令牌", comment: "Button title to revoke oauth tokens"), action: {
                                         Task {
                                             do {
                                                 try await service.tapi.revokeTokens()
@@ -77,12 +77,12 @@ public struct SettingsView: View {
                         }
                         if let username = service.session?.username {
                             VStack {
-                                Text(LocalizedString("Logged in as", comment: "LoginViewModel description text when logged in"))
+                                Text(LocalizedString("登录为", comment: "LoginViewModel description text when logged in"))
                                     .bold()
                                 Text(username)
                             }
                         } else {
-                            Text(LocalizedString("You are not logged in.", comment: "LoginViewModel description text when not logged in"))
+                            Text(LocalizedString("你没有登录。", comment: "LoginViewModel description text when not logged in"))
                                 .padding()
                         }
 
@@ -106,9 +106,9 @@ public struct SettingsView: View {
                 }
             }
         }
-        .alert(LocalizedString("Are you sure you want to delete this service?", comment: "Confirmation message for deleting a service"), isPresented: $showingDeletionConfirmation)
+        .alert(LocalizedString("您确定要删除此服务吗？", comment: "Confirmation message for deleting a service"), isPresented: $showingDeletionConfirmation)
         {
-            Button(LocalizedString("Delete Service", comment: "Button title to delete a service"), role: .destructive) {
+            Button(LocalizedString("删除服务", comment: "Button title to delete a service"), role: .destructive) {
                 service.deleteService()
                 dismiss?()
             }
@@ -147,7 +147,7 @@ public struct SettingsView: View {
         buttons.append(.cancel())
 
 
-        return ActionSheet(title: Text(LocalizedString("Environment", comment: "Tidepool login environment action sheet title")),
+        return ActionSheet(title: Text(LocalizedString("环境", comment: "Tidepool login environment action sheet title")),
                            message: Text(selectedEnvironment.description), buttons: buttons)
     }
 
@@ -159,7 +159,7 @@ public struct SettingsView: View {
                 ProgressView()
                     .progressViewStyle(CircularProgressViewStyle())
             } else {
-                Text(LocalizedString("Login", comment: "Tidepool login button title"))
+                Text(LocalizedString("登录", comment: "Tidepool login button title"))
             }
         }
         .buttonStyle(ActionButtonStyle())
@@ -171,7 +171,7 @@ public struct SettingsView: View {
         Button(action: {
             showingDeletionConfirmation = true
         }) {
-            Text(LocalizedString("Delete Service", comment: "Delete Tidepool service button title"))
+            Text(LocalizedString("删除服务", comment: "Delete Tidepool service button title"))
         }
         .buttonStyle(ActionButtonStyle(.secondary))
         .disabled(isLoggingIn)
@@ -205,7 +205,7 @@ public struct SettingsView: View {
         }
     }
 
-    private var closeButtonTitle: String { LocalizedString("Close", comment: "Close navigation button title of an onboarding section page view") }
+    private var closeButtonTitle: String { LocalizedString("关闭", comment: "Close navigation button title of an onboarding section page view") }
 }
 
 struct SettingsView_Previews: PreviewProvider {

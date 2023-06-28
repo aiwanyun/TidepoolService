@@ -18,8 +18,8 @@ public enum TidepoolServiceError: Error {
 extension TidepoolServiceError: LocalizedError {
     public var errorDescription: String? {
         switch self {
-        case .configuration: return LocalizedString("Configuration Error", comment: "Error string for TidepoolServiceError.configuration")
-        case .missingDataSetId: return LocalizedString("Missing DataSet Id", comment: "Error string for TidepoolServiceError.missingDataSetId")
+        case .configuration: return LocalizedString("配置错误", comment: "Error string for TidepoolServiceError.configuration")
+        case .missingDataSetId: return LocalizedString("缺少数据集ID", comment: "Error string for TidepoolServiceError.missingDataSetId")
         }
     }
 }
@@ -35,7 +35,7 @@ public final class TidepoolService: Service, TAPIObserver, ObservableObject {
 
     public static let serviceIdentifier = "TidepoolService"
 
-    public static let localizedTitle = LocalizedString("Tidepool", comment: "The title of the Tidepool service")
+    public static let localizedTitle = LocalizedString("潮池（退潮后在岸边礁石上留下的水洼", comment: "The title of the Tidepool service")
 
     public weak var serviceDelegate: ServiceDelegate? {
         didSet {
@@ -142,9 +142,9 @@ public final class TidepoolService: Service, TAPIObserver, ObservableObject {
 
         if session == nil {
             clearCachedDataSetId()
-            let content = Alert.Content(title: LocalizedString("Tidepool Service Authorization", comment: "The title for an alert generated when TidepoolService is no longer authorized."),
-                                        body: LocalizedString("Tidepool service is no longer authorized. Please navigate to Tidepool Service settings and reauthenticate.", comment: "The body text for an alert generated when TidepoolService is no longer authorized."),
-                                        acknowledgeActionButtonLabel: LocalizedString("OK", comment: "Alert acknowledgment OK button"))
+            let content = Alert.Content(title: LocalizedString("Tidepool服务授权", comment: "The title for an alert generated when TidepoolService is no longer authorized."),
+                                        body: LocalizedString("Tidepool服务已不再授权。请导航到Tidepool服务设置并进行重新验证。", comment: "The body text for an alert generated when TidepoolService is no longer authorized."),
+                                        acknowledgeActionButtonLabel: LocalizedString("好的", comment: "Alert acknowledgment OK button"))
             serviceDelegate?.issueAlert(Alert(identifier: Alert.Identifier(managerIdentifier: "TidepoolService",
                                                                     alertIdentifier: "authentication-needed"),
                                        foregroundContent: content, backgroundContent: content,
