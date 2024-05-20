@@ -33,9 +33,9 @@ public protocol SessionStorage {
 
 public final class TidepoolService: Service, TAPIObserver, ObservableObject {
 
-    public static let serviceIdentifier = "TidepoolService"
+    public static let pluginIdentifier = "TidepoolService"
 
-    public static let localizedTitle = LocalizedString("潮池（退潮后在岸边礁石上留下的水洼", comment: "The title of the Tidepool service")
+    public static let localizedTitle = LocalizedString("Tidepool", comment: "The title of the Tidepool service")
 
     public weak var serviceDelegate: ServiceDelegate? {
         didSet {
@@ -43,6 +43,8 @@ public final class TidepoolService: Service, TAPIObserver, ObservableObject {
             self.hostVersion = serviceDelegate?.hostVersion
         }
     }
+    
+    public weak var stateDelegate: StatefulPluggableDelegate?
 
     public lazy var sessionStorage: SessionStorage = KeychainManager()
 
@@ -64,7 +66,7 @@ public final class TidepoolService: Service, TAPIObserver, ObservableObject {
     private var hostIdentifier: String?
     private var hostVersion: String?
 
-    private let log = OSLog(category: "TidepoolService")
+    private let log = OSLog(category: pluginIdentifier)
     private let tidepoolKitLog = OSLog(category: "TidepoolKit")
 
     public init(hostIdentifier: String, hostVersion: String) {
@@ -145,8 +147,8 @@ public final class TidepoolService: Service, TAPIObserver, ObservableObject {
             let content = Alert.Content(title: LocalizedString("Tidepool服务授权", comment: "The title for an alert generated when TidepoolService is no longer authorized."),
                                         body: LocalizedString("Tidepool服务已不再授权。请导航到Tidepool服务设置并进行重新验证。", comment: "The body text for an alert generated when TidepoolService is no longer authorized."),
                                         acknowledgeActionButtonLabel: LocalizedString("好的", comment: "Alert acknowledgment OK button"))
-            serviceDelegate?.issueAlert(Alert(identifier: Alert.Identifier(managerIdentifier: "TidepoolService",
-                                                                    alertIdentifier: "authentication-needed"),
+            serviceDelegate?.issueAlert(Alert(identifier: Alert.Identifier(managerIdentifier: pluginIdentifier,
+                                                                           alertIdentifier: "authentication-needed"),
                                        foregroundContent: content, backgroundContent: content,
                                        trigger: .immediate))
         }
@@ -157,14 +159,14 @@ public final class TidepoolService: Service, TAPIObserver, ObservableObject {
     }
 
     public func completeUpdate() {
-        serviceDelegate?.serviceDidUpdateState(self)
+        stateDelegate?.pluginDidUpdateState(self)
     }
 
     public func deleteService() {
         Task {
             await self.tapi.logout()
         }
-        serviceDelegate?.serviceWantsDeletion(self)
+        stateDelegate?.pluginWantsDeletion(self)
     }
 
     private var sessionService: String { "org.tidepool.TidepoolService.\(id)" }
@@ -613,13 +615,17 @@ extension TidepoolService: RemoteDataService {
         }
     }
 
-    public func commandFromPushNotification(_ notification: [String: AnyObject]) async throws -> RemoteCommand {
+    public func uploadCgmEventData(_ stored: [LoopKit.PersistedCgmEvent], completion: @escaping (Result<Bool, Error>) -> Void) {
+        // TODO: Upload sensor/transmitter changes
+        completion(.success(false))
+    }
 
-        enum TidepoolPushNotificationError: LocalizedError {
-            case remoteCommandsNotSupported
-        }
-
-        throw TidepoolPushNotificationError.remoteCommandsNotSupported
+    public func remoteNotificationWasReceived(_ notification: [String: AnyObject]) async throws {
+        throw RemoteNotificationError.remoteCommandsNotSupported
+    }
+    
+    enum RemoteNotificationError: LocalizedError {
+        case remoteCommandsNotSupported
     }
 }
 
